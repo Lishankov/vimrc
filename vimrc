@@ -1,3 +1,4 @@
+set nu
 set expandtab
 set tabstop=4
 set softtabstop=4
@@ -24,11 +25,6 @@ vnoremap <C-z> u
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <C-o>:w<CR>
 
-" Комментирование (требует плагин commentary)
-nnoremap <C-/> :Commentary<CR>
-vnoremap <C-/> :Commentary<CR>
-inoremap <C-/> <C-o>:Commentary<CR>
-
 " Выход и сохранение
 nnoremap <C-q>w :wq<CR>
 nnoremap <C-q>q :q!<CR>
@@ -48,7 +44,7 @@ vnoremap p "+p
 nnoremap <C-Right> <C-w>>
 nnoremap <C-Left> <C-w><
 
-" Русские буквы для навигации в нормальном режиме
+" Русские буквы
 noremap ш i
 noremap Ш I
 noremap ф a
@@ -81,46 +77,21 @@ noremap Н Y
 noremap р h
 noremap Р H
 
-" Русские буквы для команд (выход и сохранение)
+" Русские буквы для команд
 cnoremap й q
 cnoremap ц w
 cnoremap йц wq
 cnoremap цй wq
 
-" Функция для проверки баланса скобок
-function! IsBalanced(open, close)
-    let line = getline('.')
-    let open_count = count(split(line, '\zs'), a:open)
-    let close_count = count(split(line, '\zs'), a:close)
-    return open_count == close_count
-endfunction
-
-" Круглые скобки
-inoremap <expr> ( IsBalanced('(', ')') ? '()<Left>' : '('
-inoremap <expr> ) ')'
-
-" Квадратные скобки
-inoremap <expr> [ IsBalanced('[', ']') ? '[]<Left>' : '['
-inoremap <expr> ] ']'
-
-" Фигурные скобки
-inoremap <expr> { IsBalanced('{', '}') ? '{}<Left>' : '{'
-inoremap <expr> } '}'
-
-" Кавычки
-inoremap <expr> ' IsBalanced("'", "'") ? "''<Left>" : "'"
-inoremap <expr> " IsBalanced('"', '"') ? '""<Left>' : '"'
-inoremap <expr>  IsBalanced('', '') ? '``<Left>' : ''
-
-" Угловые скобки
-inoremap <expr> < IsBalanced('<', '>') ? '<><Left>' : '<'
-inoremap <expr> > '>'
-
 " Компиляция и запуск
 autocmd FileType cpp nnoremap <buffer> <F4> :w<CR>:!g++ -g % -o %:r -std=c++23 && ./%:r<CR>
 autocmd FileType python nnoremap <buffer> <F4> :w<CR>:!python3 %<CR>
 
-" NERDTree
+" Переключение между NERDTree и файлом
+nnoremap <F2> <C-w>w
+nnoremap <F3> <C-w>w
+
+"Открыть NERDTree
 nnoremap <F5> :NERDTreeToggle<CR>
 
 " Отладка через GDB
