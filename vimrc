@@ -1,13 +1,32 @@
+set encoding=utf-8
 set nu
 set expandtab
 set tabstop=4
 set softtabstop=4
+set shiftwidth=4
 set history=1000
 set autoindent
 set relativenumber
 set noswapfile
 
+if !has('gui_running')
+    silent !stty -ixon
+    augroup restore_tty
+        autocmd!
+        autocmd VimLeave * silent !stty ixon
+    augroup END
+endif
+
 "плагины
+let s:plug_file = expand('~/.vim/autoload/plug.vim')
+if empty(glob(s:plug_file))
+    silent execute '!curl -fLo ' . shellescape(s:plug_file) . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    augroup plug_autoinstall
+        autocmd!
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    augroup END
+endif
+
 call plug#begin('~/.vim/plugged')
 Plug 'preservim/nerdtree'
 Plug 'ryanoasis/vim-devicons'
@@ -19,7 +38,7 @@ let g:webdevicons_enable = 1
 " Отмена
 nnoremap <C-z> u
 inoremap <C-z> <C-o>u
-vnoremap <C-z> u
+vnoremap <C-z> <Esc>u
 
 " Сохранение
 nnoremap <C-s> :w<CR>
@@ -44,44 +63,12 @@ vnoremap p "+p
 nnoremap <C-Right> <C-w>>
 nnoremap <C-Left> <C-w><
 
-" Русские буквы
-noremap ш i
-noremap Ш I
-noremap ф a
-noremap Ф A
-noremap й q
-noremap Й Q
-noremap ц w
-noremap Ц W
-noremap р h 
-noremap Р H
-noremap о j
-noremap О J
-noremap л k
-noremap Л K
-noremap д l
-noremap Д L
-noremap з p 
-noremap З P
-noremap я z 
-noremap Я Z
-noremap с c
-noremap С C
-noremap м v
-noremap М V
-noremap ы s
-noremap Ы S
-noremap Ж :
-noremap н y
-noremap Н Y
-noremap р h
-noremap Р H
+let &langmap = 'ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz,ж\;,Ж:,х[,ъ],Х{,Ъ},э'',б\,,ю.,Б<,Ю>,ё`,Ё~'
 
-" Русские буквы для команд
-cnoremap й q
-cnoremap ц w
-cnoremap йц wq
-cnoremap цй wq
+cnoreabbrev <expr> й  getcmdtype() == ':' && getcmdline() ==# 'й'  ? 'q'  : 'й'
+cnoreabbrev <expr> ц  getcmdtype() == ':' && getcmdline() ==# 'ц'  ? 'w'  : 'ц'
+cnoreabbrev <expr> йц getcmdtype() == ':' && getcmdline() ==# 'йц' ? 'wq' : 'йц'
+cnoreabbrev <expr> цй getcmdtype() == ':' && getcmdline() ==# 'цй' ? 'wq' : 'цй'
 
 " Компиляция и запуск
 autocmd FileType cpp nnoremap <buffer> <F4> :w<CR>:!g++ -g % -o %:r -std=c++23 && ./%:r<CR>
